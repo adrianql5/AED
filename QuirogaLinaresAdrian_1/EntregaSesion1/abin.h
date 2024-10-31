@@ -33,7 +33,7 @@
 //es un árbol de números enteros
 typedef char tipoelem;
 //definición del tipo opaco
-typedef void *abin; 
+typedef void *abin;
 
 /////////////////////////////// FUNCIONES
 /*
