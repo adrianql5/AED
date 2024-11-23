@@ -3,26 +3,29 @@
 #include "tabla_hash_encadenamiento.h"
 
 //Hay que añadir como parámetro la variable nColisionesI: número de colisiones en inserción
-void insercionArchivo(FILE *fp, TablaHash *t, unsigned int tipo, unsigned int K);
+void insercionArchivo(FILE *fp, TablaHash *t, unsigned int tipo, unsigned int K, int *nColisionesI);
 //Hay que añadir como parámetro la variable nPasosExtraB: número de pasos extra en búsqueda
-void busquedaArchivo(FILE *fp, TablaHash t, unsigned int tipo, unsigned int K);
+void busquedaArchivo(FILE *fp, TablaHash t, unsigned int tipo, unsigned int K, int *nPasosExtraB);
 
 int main(int argc, char** argv) {
     unsigned int tipoFH; //tipo de función hash: 1-2-3
     unsigned int K=256; //factor de ponderación para hash por suma ponderada
 
     TablaHash t; //tabla hash
-    
+
     //////////////////////////////////////////////////////////////////////
     //Inicializar a 0 las variables nColisionesI y nPasosExtraB
     //////////////////////////////////////////////////////////////////////
+
+    int nColisionesI=0;
+    int nPasosExtraB=0;
 
     //Abrimos el fichero de datos de ejemplo, con 10000 jugadores
     FILE *fp = fopen("jugadores_got.txt", "rt");
 
     //Informo del tamaño de la tabla actual
     printf("Tamaño de la tabla hash: %d\n",N);
-    
+
     //Pregunto al usuario que función hash quiere utilizar
     printf("Función hash a utilizar:"
             "\n\t1: método división (suma ascii módulo N)"
@@ -44,10 +47,12 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////
     //Añadir como parámetro por referencia nColisionesI
     //////////////////////////////////////////////////////
-    insercionArchivo(fp, &t, tipoFH, K);
+    insercionArchivo(fp, &t, tipoFH, K, &nColisionesI);
     //////////////////////////////////////////////////////
     //Imprimir nColisionesI
     //////////////////////////////////////////////////////
+    printf("Número de colisiones: %d\n", nColisionesI);
+
 
     rewind(fp); //rebobino
 
@@ -56,13 +61,15 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////
     //Añadir como parámetro por referencia nPasosExtraB
     //////////////////////////////////////////////////////
-    busquedaArchivo(fp, t, tipoFH, K);
+    busquedaArchivo(fp, t, tipoFH, K, &nPasosExtraB);
     //////////////////////////////////////////////////////
     //Imprimir nPasosExtraB
     //////////////////////////////////////////////////////
-    
+    printf("Número de pasos extra: %d\n", nPasosExtraB);
+
+
     DestruirTablaHash(t); //Destruyo la tabla
-    fclose(fp); //Cierro el archivo    
+    fclose(fp); //Cierro el archivo
 
     return (EXIT_SUCCESS);
 }
@@ -71,7 +78,7 @@ int main(int argc, char** argv) {
 ///////////////////////////////////////
 //Añadir el parámetro por referencia nColisionesI
 ///////////////////////////////////////
-void insercionArchivo(FILE *fp, TablaHash *t, unsigned int tipoFH, unsigned int K) {
+void insercionArchivo(FILE *fp, TablaHash *t, unsigned int tipoFH, unsigned int K, int *nColisionesI) {
     TIPOELEMENTO jugador;
     if (fp) {
         fscanf(fp, " %[^-] - %s - %s", jugador.nombre, jugador.alias, jugador.correo);
@@ -80,7 +87,7 @@ void insercionArchivo(FILE *fp, TablaHash *t, unsigned int tipoFH, unsigned int 
             //Modificar la función InsertarHash para que devuelve: 1 si colisión, 0 en caso contrario
             //y acumular estos valores en nColisionesI
             /////////////////////////////////////////////////////////////////////////////////////////
-            InsertarHash(t, jugador, tipoFH, K); 
+            (*nColisionesI)+=InsertarHash(t, jugador, tipoFH, K);
             fscanf(fp, " %[^-] - %s - %s", jugador.nombre, jugador.alias, jugador.correo);
         }
     } else {
@@ -92,14 +99,14 @@ void insercionArchivo(FILE *fp, TablaHash *t, unsigned int tipoFH, unsigned int 
 //////////////////////////////////////////////////////////////////
 //Añadir el parámetro por referencia nPasosExtraB
 //////////////////////////////////////////////////////////////////
-void busquedaArchivo(FILE *fp, TablaHash t, unsigned int tipoFH, unsigned int K) {
+void busquedaArchivo(FILE *fp, TablaHash t, unsigned int tipoFH, unsigned int K, int *nPasosExtraB) {
     TIPOELEMENTO jugador;
     if (fp) {
         fscanf(fp, " %[^-] - %s - %s", jugador.nombre, jugador.alias, jugador.correo);
         while (!feof(fp)) {
             //////////////////////////////////////////////////////////////////////////////////////////
             //Añadir a BuscarHash() el parámetro por referencia nPasosExtraB
-            BuscarHash(t, jugador.alias, &jugador, tipoFH, K);
+            BuscarHash(t, jugador.alias, &jugador, tipoFH, K,nPasosExtraB);
             fscanf(fp, " %[^-] - %s - %s", jugador.nombre, jugador.alias, jugador.correo);
         }
     } else {
