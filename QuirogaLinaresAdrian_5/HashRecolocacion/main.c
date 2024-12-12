@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
     //Imprimir nColisionesI y nPasosExtraI
     //////////////////////////////////////////////////////////////////
     printf("Número de colisiones: %d\n", nColisionesI);
-    printf("Número de pasos extras I: %d\n", nPasosExtraI);
+    printf("Número de pasos extra I: %d\n", nPasosExtraI);
 
     rewind(fp); //rebobino
 
@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////////////////
     //Imprimir nPasosExtraB
     //////////////////////////////////////////////////////////////////
-    printf("nPasosExtraB: %d\n", nPasosExtraB);
+    printf("Número de pasos extra B: %d\n", nPasosExtraB);
 
     fclose(fp); //Cierro el archivo
 

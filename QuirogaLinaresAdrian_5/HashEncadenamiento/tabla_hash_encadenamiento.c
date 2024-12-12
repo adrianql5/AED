@@ -31,12 +31,13 @@ int InsertarHash(TablaHash *t, TIPOELEMENTO elemento, unsigned int tipoFH, unsig
     //Inicializo hayColision a cero
     //Se produce colisión cuando la lista de la posición pos NO está vacía
     ///////////////////////////////////////////////////////////////////////////////////
+    int n=0;
     if(!esListaVacia((*t)[pos])){
-            return 1;
+            n= 1;
     }
 
     insertarElementoLista(&(*t)[pos], primeroLista((*t)[pos]), elemento);
-    return 0;
+    return n;
 }
 
 ////////////////////////////////////////////////////////////////////

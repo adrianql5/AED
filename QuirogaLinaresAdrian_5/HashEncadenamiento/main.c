@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////
     //Imprimir nColisionesI
     //////////////////////////////////////////////////////
-    printf("Número de colisiones: %d\n", nColisionesI);
+    printf("Número de colisiones I: %d\n", nColisionesI);
 
 
     rewind(fp); //rebobino
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
     //////////////////////////////////////////////////////
     //Imprimir nPasosExtraB
     //////////////////////////////////////////////////////
-    printf("Número de pasos extra: %d\n", nPasosExtraB);
+    printf("Número de pasos extra B: %d\n", nPasosExtraB);
 
 
     DestruirTablaHash(t); //Destruyo la tabla

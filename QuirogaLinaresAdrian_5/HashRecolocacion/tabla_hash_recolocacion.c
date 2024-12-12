@@ -4,7 +4,7 @@
 
 void InicializarTablaHash(TablaHash t) {
     for (int i = 0; i < N; i++)
-        t[i].correo[0] = VACIO;
+        t[i].alias[0] = VACIO;
 }
 
 /******* FUNCIONES HASH *******/
@@ -50,14 +50,14 @@ int _PosicionBuscar(TablaHash t, char *cad, unsigned int tipoFH, unsigned int K,
                 break;
         }
 
-        if (t[posicion].correo[0] == VACIO) { //si está vacío, terminé de buscar
+        if (t[posicion].alias[0] == VACIO) { //si está vacío, terminé de buscar
             ///////////////////////////////////////////////
             //incremento en i el nPasosExtraB
             ///////////////////////////////////////////////
             (*nPasosExtraB)+=i;
             return posicion;
         }
-        if (!strcmp(t[posicion].correo, cad)) {//si encontré cad, terminé de buscar
+        if (!strcmp(t[posicion].alias, cad)) {//si encontré cad, terminé de buscar
             ///////////////////////////////////////////////
             //incremento en i el nPasosExtraB
             ///////////////////////////////////////////////
@@ -95,7 +95,7 @@ int _PosicionInsertar(TablaHash t, char *cad, unsigned int tipoFH, unsigned int 
         }
 
         //Busco hueco en aux
-        if (t[posicion].correo[0] == VACIO || t[posicion].correo[0] == BORRADO) {
+        if (t[posicion].alias[0] == VACIO || t[posicion].alias[0] == BORRADO) {
             //Hueco encontrado, se han necesitado i intentos para ubicar el dato
             ////////////////////////////////////////////////////////////////////
             //Incrementar en i la variable nPasosExtraI
@@ -104,7 +104,7 @@ int _PosicionInsertar(TablaHash t, char *cad, unsigned int tipoFH, unsigned int 
             return posicion;
         }
         //Si el elemento a insertar ya estaba en la tabla
-        if (!strcmp(t[posicion].correo, cad)) {
+        if (!strcmp(t[posicion].alias, cad)) {
             //Ya está, se han necesitado i intentos para encontrar el dato
             ////////////////////////////////////////////////////////////////////
             //Incrementar en i la variable nPasosExtraI
@@ -127,10 +127,10 @@ int EsMiembroHash(TablaHash t, char *cad, unsigned int tipoFH, unsigned int K, u
     ///////////////////////////////////////////////////////
     int posicion = _PosicionBuscar(t, cad, tipoFH, K, tipoR,a,nPasosExtraB);
 
-    if (t[posicion].correo[0] == VACIO)
+    if (t[posicion].alias[0] == VACIO)
         return 0;
     else
-        return (!strcmp(t[posicion].correo, cad));
+        return (!strcmp(t[posicion].alias, cad));
 }
 
 /* BUSCA UN ELEMENTO CON LA CLAVE INDICADA EN LA TABLA HASH, Y LO DEVUELVE,
@@ -143,10 +143,10 @@ int BuscarHash(TablaHash t, char *clavebuscar, TIPOELEMENTO *e, unsigned int tip
     //La función _PosicionBuscar necesita nPasosExtraB
     ///////////////////////////////////////////////////////
     int posicion = _PosicionBuscar(t, clavebuscar, tipoFH, K, tipoR, a,nPasosExtraB);
-    if (t[posicion].correo[0] == VACIO)
+    if (t[posicion].alias[0] == VACIO)
         return 0;
     else {
-        if (strcmp(t[posicion].correo, clavebuscar) == 0) {
+        if (strcmp(t[posicion].alias, clavebuscar) == 0) {
             *e = t[posicion];
             return 1;
         } else return 0;
@@ -166,10 +166,10 @@ int InsertarHash(TablaHash t, TIPOELEMENTO e, unsigned int tipoFH, unsigned int 
     ////////////////////////////////
     int hayColisionI=0;
 
-    posicion = _PosicionInsertar(t, e.correo, tipoFH, K, tipoR,a, &hayColisionI, nPasosExtraI);
+    posicion = _PosicionInsertar(t, e.alias, tipoFH, K, tipoR,a, &hayColisionI, nPasosExtraI);
     /////////////////////////////////////////////////////////////
 
-    if (t[posicion].correo[0] == VACIO || t[posicion].correo[0] == BORRADO) {
+    if (t[posicion].alias[0] == VACIO || t[posicion].alias[0] == BORRADO) {
         t[posicion] = e;
     }
     /////////////////////////////////
@@ -188,10 +188,10 @@ void BorrarHash(TablaHash t, char *cad, unsigned int tipoFH, unsigned int K, uns
     ///////////////////////////////////////////////////////
     int posicion = _PosicionBuscar(t, cad, tipoFH, K, tipoR, a, nPasosExtraE);
 
-    if (t[posicion].correo[0] != VACIO && t[posicion].correo[0] != BORRADO) {
-        if (!strcmp(t[posicion].correo, cad)) {
-            t[posicion].correo[0] = BORRADO;
-            t[posicion].correo[1] = VACIO;
+    if (t[posicion].alias[0] != VACIO && t[posicion].alias[0] != BORRADO) {
+        if (!strcmp(t[posicion].alias, cad)) {
+            t[posicion].alias[0] = BORRADO;
+            t[posicion].alias[1] = VACIO;
         }
     }
 }
