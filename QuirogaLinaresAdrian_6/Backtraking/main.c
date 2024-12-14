@@ -27,8 +27,10 @@ int main() {
     int sInicial[n];
     for (int i = 0; i < n; i++) sInicial[i] = -1;
 
+    //Backtracking sin usar el vector de usadas
     Backtracking(sInicial, B,0);
 
+    //Backtracking usando el vector de usadas
     Backtracking(sInicial, B,1);
 
     return 0;

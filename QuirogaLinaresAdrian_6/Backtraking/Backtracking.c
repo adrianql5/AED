@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "Backtracking.h"
 
+// Variables globales
 int nodosVisitados = 0;
 int pasosCriterio = 0;
 int pasosGenerar = 0;
@@ -10,7 +11,7 @@ int pasosRetroceder = 0;
 
 // Verifica el criterio con/sin "usada"
 int Criterio(int nivel, int s[], int usarUsadas, int usada[]) {
-    
+    //Si se usa el vector de usadas.
     if (usarUsadas) {
         pasosCriterio++;
         return (s[nivel] < n && usada[s[nivel]] == 1);
@@ -29,7 +30,7 @@ int Solucion(int nivel, int s[], int usarUsadas, int usada[]) {
     return (nivel == n - 1 && Criterio(nivel, s, usarUsadas, usada));
 }
 
-// Generar nodo sin uso de "usada"
+// Generar el siguiente nodo sin usar el vector de usadas
 void GenerarSinUsadas(int *nivel, int s[], int *bact, int B[][n]) {
     pasosGenerar++;
     s[*nivel] = s[*nivel] + 1;
@@ -42,10 +43,10 @@ void GenerarSinUsadas(int *nivel, int s[], int *bact, int B[][n]) {
     for(int i=0; i< (*nivel); i++){
         if(s[*nivel]==s[i]) return;
     }
-    nodosVisitados++;
+    nodosVisitados++;//si cumple el criterio se cuenta como nodo visitado
 }
 
-// Generar nodo con uso de "usada"
+// Generar el siguiente nodo usando el vector de usadas
 void GenerarConUsadas(int *nivel, int s[], int *bact, int B[][n], int usada[n]) {
     pasosGenerar++;
     if (s[*nivel] != -1) {
@@ -64,7 +65,7 @@ void GenerarConUsadas(int *nivel, int s[], int *bact, int B[][n], int usada[n]) 
     for(int i = 0; i < (*nivel); i++){
         if(s[*nivel] == s[i]) return;
     }
-    nodosVisitados++;
+    nodosVisitados++;//si cumple el criterio se cuenta como nodo visitado
 }
 
 // Resetea los contadores de pasos
@@ -86,6 +87,8 @@ int masHermanos(int nivel, int s[]) {
 // Retrocede en el árbol de decisiones
 void Retroceder(int *nivel, int s[], int *bact, int B[][n], int usada[n], int usarUsadas) {
     pasosRetroceder++;
+    //si usamos el vector de usadas
+    ///recalculamos el beneficio y el nivel
     if (usarUsadas){
         *bact = *bact - B[*nivel][s[*nivel]];
         usada[s[*nivel]]--;
@@ -118,7 +121,7 @@ void imprimirSolucion(int voa, int soa[], int usarUsadas) {
     printf("Nº pasos Solución: %d\n", pasosSolucion);
     printf("Nº pasos masHermanos: %d\n", pasosMasHermanos);
     printf("Nº pasos Retroceder: %d\n", pasosRetroceder);
-    printf("\n");   
+    printf("\n");
 }
 
 // Algoritmo de Backtracking
@@ -131,6 +134,7 @@ void Backtracking(int sInicial[], int B[][n], int usarUsadas) {
 
     int usada[n];
 
+    //en caso de querer usar el vector de usadas
     if(usarUsadas) for (int i = 0; i < n; i++) usada[i] = 0;
 
     int voa = -1;
@@ -140,24 +144,25 @@ void Backtracking(int sInicial[], int B[][n], int usarUsadas) {
     int bact = 0;
 
     while (nivel != -1) {
-        if (usarUsadas) {
+        if (usarUsadas) {//gereramos con el vector de usadas
             GenerarConUsadas(&nivel, s, &bact, B, usada);
         } else {
             GenerarSinUsadas(&nivel, s, &bact, B);
         }
-
+        //comprobamos si es solución
         if (Solucion(nivel, s, usarUsadas, usada) && (bact > voa)) {
             voa = bact;
             for (int i = 0; i < n; i++) soa[i] = s[i];
         }
-
+        //comprobamos si se cumple el criterio
         if (Criterio(nivel, s, usarUsadas, usada) && (nivel < n - 1)) {
             nivel++;
         }
+        //si no hay más hermanos retrocedemos
         while (!masHermanos(nivel, s) && (nivel >= 0)) {
             Retroceder(&nivel, s, &bact, B, usada, usarUsadas);
         }
-        
+
     }
 
     imprimirSolucion(voa, soa,usarUsadas);

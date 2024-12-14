@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "RamificacionYPoda.h"
+#include "lista.h"
 
 int contadorNodos=0;
 
@@ -132,37 +133,37 @@ NODO SolAsignacionVoraz(NODO x, int B[][N]) {
 
 
 void asignacionPrecisa(int B[][N], NODO *s) {
-    TLISTA LNV;
-    NODO raiz, x, y;
-    float C = 0;
+    TLISTA LNV; // Listade nodos vivos
+    NODO raiz, x, y;//Nodo raiz, nodo seleccionado(x) y nodo hijo de x(y)
+    float C = 0;//Variable de poda
 
-    contadorNodos++;
-    raiz.bact = 0;
-    raiz.nivel = -1;
+    contadorNodos++;//cuento la raiz
+    raiz.bact = 0;//no hay asiganciones, beneficio acumulado 0
+    raiz.nivel = -1;//primer nivel del arbol
     for (int i = 0; i < N; i++) {
-        raiz.tupla[i] = -1;
-        raiz.usadas[i] = 0;
+        raiz.tupla[i] = -1;//tupla de solucion sin ataques asignados
+        raiz.usadas[i] = 0;//todos los ataques están sin usar
     }
 
-    CI_precisa(&raiz, B);
-    CS_precisa(&raiz, B);
-    BE(&raiz);
+    CI_precisa(&raiz, B);//cota ingerior de raiz
+    CS_precisa(&raiz, B);//cota superior de raiz
+    BE(&raiz);//beneficio estimado de raiz
 
-    crearLista(&LNV);
-    insertarElementoLista(&LNV, primeroLista(LNV), raiz);
+    crearLista(&LNV);//creo la lista de nodos vivos
+    insertarElementoLista(&LNV, primeroLista(LNV), raiz);//inserto la raiz en la lista de nodos vivos
 
     while (!esListaVacia(LNV)) {
-        x = Seleccionar(LNV);
-        if (x.CS > C) {
-            for (int i = 0; i < N; i++) {
+        x = Seleccionar(LNV);//selecciona x y lo elimina de la LNV
+        if (x.CS > C) { //ramificamos: generamos cada hijo
+            for (int i = 0; i < N; i++) { //para cada hijo y de x
                 y.nivel = x.nivel + 1;
                 for (int k = 0; k < N; k++) {
                     y.tupla[k] = x.tupla[k];
                     y.usadas[k] = x.usadas[k];
                 }
 
-                if (!x.usadas[i]) {
-                    y.tupla[y.nivel] = i;
+                if (!x.usadas[i]) {//nodo valido
+                    y.tupla[y.nivel] = i;//ciudad 'i' galeón 'nivel'
                     y.usadas[i] = 1;
                     y.bact = x.bact + B[y.nivel][i];
 
@@ -173,11 +174,11 @@ void asignacionPrecisa(int B[][N], NODO *s) {
                     BE(&y);
 
 
-                    if(!Solucion(y) && y.CS>=C && y.CS==y.CI){
+                    if(!Solucion(y) && y.CS>=C && y.CS==y.CI){//y es solución
                         y= SolAsignacionVoraz(y,B);
                         *s=y;
                         C=max(C,y.bact);
-                        continue;
+                        continue;//termine la búsqueda por esta rama, ya no analizao los demás hermanos
                     }
 
                     if (Solucion(y) && (y.bact > s->bact)) {
@@ -186,7 +187,7 @@ void asignacionPrecisa(int B[][N], NODO *s) {
                             C=y.bact;
                         }
                     } else if (!Solucion(y) && y.CS > C) {
-                        insertarElementoLista(&LNV, primeroLista(LNV), y);
+                        insertarElementoLista(&LNV, primeroLista(LNV), y);//inserto en la LNV
                         C = max(C, y.CI);
                     }
                 }
@@ -197,7 +198,7 @@ void asignacionPrecisa(int B[][N], NODO *s) {
 
         }
 
-        else if( x.CS==C && x.CS==x.CI){
+        else if( x.CS==C && x.CS==x.CI){//nodo x seleccionado es solucion voraz
 
             *s = SolAsignacionVoraz(x,B);
         }
@@ -212,6 +213,7 @@ void asignacionPrecisa(int B[][N], NODO *s) {
     printf("\n");
 
     contadorNodos=0;
+    destruirLista(&LNV);
 }
 
 void CI_trivial(NODO *x, int B[][N]) {
@@ -256,10 +258,10 @@ void asignacionTrivial(int B[][N], NODO *s) {
     insertarElementoLista(&LNV, primeroLista(LNV), raiz);
 
     while (!esListaVacia(LNV)) {
-        x = Seleccionar(LNV);
-        if (x.CS > C) {
+        x = Seleccionar(LNV);//seleccionar x y lo elimina de la LNV
+        if (x.CS > C) {//ramificamos: generamos cada hijo
 
-            for (int i = 0; i < N; i++) {
+            for (int i = 0; i < N; i++) {//para cada hijo y de x
                 y.nivel = x.nivel + 1;
 
 
@@ -268,8 +270,8 @@ void asignacionTrivial(int B[][N], NODO *s) {
                     y.usadas[k] = x.usadas[k];
                 }
 
-                if (!x.usadas[i]) {
-                    y.tupla[y.nivel] = i;
+                if (!x.usadas[i]) {//nodo valido
+                    y.tupla[y.nivel] = i;//ciudad 'i' galeón 'nivel'
                     y.usadas[i] = 1;
                     y.bact = x.bact + B[y.nivel][i];
 
@@ -283,7 +285,7 @@ void asignacionTrivial(int B[][N], NODO *s) {
                         *s = y;
                         C = max(C, y.bact);
                     } else if (!Solucion(y) && y.CS > C) {
-                        insertarElementoLista(&LNV, finLista(LNV), y);
+                        insertarElementoLista(&LNV, finLista(LNV), y);//inserto por el final(FIFO)
                         C = max(C, y.CI);
                     }
                 }
@@ -300,4 +302,5 @@ void asignacionTrivial(int B[][N], NODO *s) {
     printf("\n");
 
     contadorNodos=0;
+    destruirLista(&LNV);
 }
