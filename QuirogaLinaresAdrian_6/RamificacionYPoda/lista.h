@@ -1,7 +1,7 @@
 #ifndef LISTA_H
 #define LISTA_H
 
-#define N 3
+#define N 6
 //#define N 3
 
 //Definición del tipo de elemento almacenado en la lista

@@ -149,6 +149,7 @@ void asignacionPrecisa(int B[][N], NODO *s) {
     CS_precisa(&raiz, B);//cota superior de raiz
     BE(&raiz);//beneficio estimado de raiz
 
+    C=raiz.CI;
     crearLista(&LNV);//creo la lista de nodos vivos
     insertarElementoLista(&LNV, primeroLista(LNV), raiz);//inserto la raiz en la lista de nodos vivos
 
@@ -191,11 +192,7 @@ void asignacionPrecisa(int B[][N], NODO *s) {
                         C = max(C, y.CI);
                     }
                 }
-
             }
-
-
-
         }
 
         else if( x.CS==C && x.CS==x.CI){//nodo x seleccionado es solucion voraz
@@ -254,6 +251,7 @@ void asignacionTrivial(int B[][N], NODO *s) {
     CS_trivial(&raiz, B);
     BE(&raiz);
 
+    C=raiz.CI;
     crearLista(&LNV);
     insertarElementoLista(&LNV, primeroLista(LNV), raiz);
 
